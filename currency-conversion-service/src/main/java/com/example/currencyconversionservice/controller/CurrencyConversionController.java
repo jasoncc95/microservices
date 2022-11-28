@@ -1,6 +1,7 @@
 package com.example.currencyconversionservice.controller;
 
 import com.example.currencyconversionservice.model.CurrencyConversion;
+import com.example.currencyconversionservice.proxy.CurrencyExchangeProxy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,11 @@ import java.util.HashMap;
 
 @RestController
 public class CurrencyConversionController {
+    private final CurrencyExchangeProxy currencyExchangeProxy;
+
+    public CurrencyConversionController(CurrencyExchangeProxy currencyExchangeProxy) {
+        this.currencyExchangeProxy = currencyExchangeProxy;
+    }
 
     @GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConversion calculateCurrencyConversion(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity) {
@@ -25,6 +31,18 @@ public class CurrencyConversionController {
             throw new RuntimeException(String.format("Could not get the data for from: %s to: %s", from, to));
         }
         currencyConversion.setTotalCalculatedAmount(quantity.multiply(currencyConversion.getConversionMultiple()));
+        currencyConversion.setEnvironment(currencyConversion.getEnvironment() + " rest template");
+        return currencyConversion;
+    }
+
+    @GetMapping("/currency-conversion-feign/from/{from}/to/{to}/quantity/{quantity}")
+    public CurrencyConversion calculateCurrencyConversionFeign(@PathVariable String from, @PathVariable String to, @PathVariable BigDecimal quantity) {
+        CurrencyConversion currencyConversion = currencyExchangeProxy.getExchangeValue(from, to);
+        if (currencyConversion == null) {
+            throw new RuntimeException(String.format("Could not get the data for from: %s to: %s", from, to));
+        }
+        currencyConversion.setTotalCalculatedAmount(quantity.multiply(currencyConversion.getConversionMultiple()));
+        currencyConversion.setEnvironment(currencyConversion.getEnvironment() + " feign");
         return currencyConversion;
     }
 
