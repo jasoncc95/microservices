@@ -1,9 +1,10 @@
 package com.example.currencyexchangeservice.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 
 @Entity(name = "currency_exchange")
