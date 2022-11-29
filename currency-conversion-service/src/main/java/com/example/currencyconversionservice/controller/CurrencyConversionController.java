@@ -30,6 +30,7 @@ public class CurrencyConversionController {
         if (currencyConversion == null) {
             throw new RuntimeException(String.format("Could not get the data for from: %s to: %s", from, to));
         }
+        currencyConversion.setQuantity(quantity);
         currencyConversion.setTotalCalculatedAmount(quantity.multiply(currencyConversion.getConversionMultiple()));
         currencyConversion.setEnvironment(currencyConversion.getEnvironment() + " rest template");
         return currencyConversion;
@@ -41,6 +42,7 @@ public class CurrencyConversionController {
         if (currencyConversion == null) {
             throw new RuntimeException(String.format("Could not get the data for from: %s to: %s", from, to));
         }
+        currencyConversion.setQuantity(quantity);
         currencyConversion.setTotalCalculatedAmount(quantity.multiply(currencyConversion.getConversionMultiple()));
         currencyConversion.setEnvironment(currencyConversion.getEnvironment() + " feign");
         return currencyConversion;
